@@ -1,10 +1,9 @@
 {
   "name": "openbazaar-connector",
-  "version": "0.0.2",
-  "description": "A small library providing access to Open Bazaar web sockets",
+  "version": "0.0.3",
+  "description": "OpenBazaar Websocket SDK",
   "main": "index.js",
-  "scripts": {
-  },
+  "scripts": {},
   "repository": {
     "type": "git",
     "url": "git://github.com/OpenBazaar/openbazaar-connector.git"
@@ -16,5 +15,11 @@
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/OpenBazaar/openbazaar-connector/issues"
+  },
+  "dependencies": {
+    "debug": "^2.1.3",
+    "forward-emitter": "0.0.1",
+    "reconnect-core": "^1.0.0",
+    "websocket-stream": "^1.5.0"
   }
 }
