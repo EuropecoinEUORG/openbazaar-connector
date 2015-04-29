@@ -8,14 +8,17 @@ var forward = require('forward-emitter');
 var debug = require('debug')('openbazaar:connector');
 var debugData = require('debug')('openbazaar:connector:data');
 
-// Generates a new 'reconnect' instance for export. This will automatically
+// Generates a new 'reconnect' instance. This will automatically
 // reconnect to the host when it receives a 'close' event.
-var socketReconnector = module.exports = inject(function(host, port) {
+var socketReconnector = inject(function(host, port) {
   var socket_uri = 'ws:' + host + ':' + port + '/ws';
   debug('Connecting to websocket at', socket_uri);
   return websocket(socket_uri);
 });
 
+// We expect a wrapper around the Adapter. This uses reconnect-core
+// to keep a connection open to the underlying socket and queue up
+// commands while disconnected.
 module.exports = function Wrapper(host, port) {
   // So it can be called without `new`
   if (!this instanceof Wrapper) return new Wrapper(host, port);
@@ -41,6 +44,10 @@ module.exports = function Wrapper(host, port) {
   return adapter;
 };
 
+/**
+ * The return value of the exports. This is an object that essentially does RPC
+ * to the Python server.
+ */
 function OpenBazaarAdapter() {
   EventEmitter.call(this);
   this.sendQueue = [];
@@ -75,10 +82,12 @@ OpenBazaarAdapter.prototype._connected = function(stream) {
     // Emit a 'data' event directly so users can get raw data.
     me.emit('data', datum);
 
+    // We need to uniquely identify the data coming back for this request.
+    // There is a `type` value sent back we can use.
+    var type = datum.result.type;
+
     // If a callback is set up, call it.
     // Sometimes we can get data we didn't even ask for. Ignore that data.
-    // Users can attach to adapter
-    var type = datum.result.type.replace(stripType, '');
     if (me.cbs[type] && me.cbs[type].length) {
       me.cbs[type].shift()(datum);
     }
@@ -93,7 +102,7 @@ OpenBazaarAdapter.prototype._connected = function(stream) {
  * Send a command to OB.
  * @param  {String}   cmd      Command to send.
  * @param  {Object}   [params] Params to send.
- * @param  {Function} cb       Callback.
+ * @param  {Function} [cb]     Callback.
  */
 OpenBazaarAdapter.prototype.sendCommand = function(cmd, params, cb) {
   if (!this.stream) return this.sendQueue.push([cmd, params, cb]);
@@ -111,7 +120,12 @@ OpenBazaarAdapter.prototype.sendCommand = function(cmd, params, cb) {
   };
   this.stream.write(JSON.stringify(request));
 
-  // Create or append to callback array
+  // Bail out early if no cb was provided.
+  if (!cb) return this;
+
+  // Create or append to callback array.
+  // Type must be converted because the python server sometimes sends back
+  // datagrams with a `type` that doesn't exactly match the `cmd`.
   var type = stripType(cmd);
   if (this.cbs[type]) {
     this.cbs[type].push(cb);
@@ -140,8 +154,10 @@ functions.forEach(function(fn) {
  */
 OpenBazaarAdapter.prototype.subscribe = function(cmd, params, cb) {
   var me = this;
+  // Add the callback to staticCbs, where it will be called every time data
+  // comes back. See the note about stripType in sendCommand().
   me.staticCbs[stripType(cmd)] = cb;
-  this.sendCommand(cmd, params, function() {});
+  this.sendCommand(cmd, params);
 
   // Chainable
   return this;
