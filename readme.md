@@ -8,6 +8,11 @@ SDK for connecting to the OpenBazaar websocket.
 ```javascript
 var connector = require('openbazaar-connector')(hostname, port);
 
+// Function arity is (cmd, [params], cb)
+connector.sendCommand('check_order_count', {}, function(data) {
+  // Order data here
+})
+
 // You can also use any supported function directly. See functions.js.
 connector.check_inbox_count(function(data) {
   // Inbox data here
