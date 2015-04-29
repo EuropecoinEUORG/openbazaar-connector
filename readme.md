@@ -44,3 +44,17 @@ cd openbazaar-connector
 npm install
 node sample_usage.js $PORT
 ```
+
+## Available functions
+
+The following is a list of functions available to be called.
+
+You can get this in text format [here](functions.js).
+
+Yellow items follow the standard req/res model, but some may not return any data.
+
+White items should be treated as subscriptions as they may return multiple datagrams.
+
+Orange items are deprecated.
+
+![Imgur](http://i.imgur.com/4f0ygCF.png)
