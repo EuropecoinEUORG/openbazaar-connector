@@ -1,6 +1,6 @@
 {
   "name": "openbazaar-connector",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A small library providing access to Open Bazaar web sockets",
   "main": "index.js",
   "scripts": {
