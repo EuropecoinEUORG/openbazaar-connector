@@ -13,7 +13,7 @@
     "open bazaar"
   ],
   "author": "Regan Lawton <reganlawto92@gmail.com> (http://reganlawton.com/)",
-  "license": "MIT license",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/OpenBazaar/openbazaar-connector/issues"
   }
