@@ -1,0 +1,20 @@
+{
+  "name": "openbazaar-connector",
+  "version": "0.0.1",
+  "description": "A small library providing access to Open Bazaar web sockets",
+  "main": "index.js",
+  "scripts": {
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/OpenBazaar/openbazaar-connector.git"
+  },
+  "keywords": [
+    "open bazaar"
+  ],
+  "author": "Regan Lawton <reganlawto92@gmail.com> (http://reganlawton.com/)",
+  "license": "MIT license",
+  "bugs": {
+    "url": "https://github.com/OpenBazaar/openbazaar-connector/issues"
+  }
+}
