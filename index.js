@@ -19,11 +19,8 @@ var socketReconnector = inject(function(host, port) {
 // We expect a wrapper around the Adapter. This uses reconnect-core
 // to keep a connection open to the underlying socket and queue up
 // commands while disconnected.
-module.exports = function Wrapper(host, port) {
-  // So it can be called without `new`
-  if (!this instanceof Wrapper) return new Wrapper(host, port);
-
-  var adapter = this.adapter = new OpenBazaarAdapter();
+module.exports = function createWrapper(host, port) {
+  var adapter = new OpenBazaarAdapter();
 
   adapter.emitter = socketReconnector({}, function onWSConnect(stream) {
     debug('Connected.');

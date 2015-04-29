@@ -1,5 +1,5 @@
 'use strict';
-var OpenBazaarConnector = require('./index');
+var createOBConnector = require('./index');
 
 var port = process.argv[2];
 if (!port) {
@@ -7,7 +7,7 @@ if (!port) {
   process.exit(1);
 }
 
-var connector = new OpenBazaarConnector('localhost', port);
+var connector = createOBConnector('localhost', port);
 
 connector.subscribe('peers', function(data) {
   console.log('Got peers data from subscription:', summarize(data));
