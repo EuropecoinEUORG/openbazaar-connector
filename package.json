@@ -1,6 +1,6 @@
 {
   "name": "openbazaar-connector",
-  "version": "0.0.2",
+  "version": "0.0.4",
   "description": "OpenBazaar Websocket SDK",
   "main": "index.js",
   "scripts": {},
